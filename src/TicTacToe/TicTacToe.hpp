@@ -14,7 +14,20 @@ public:
     void mouseButtonPressed(const sf::Event& event);
 
 private:
+    void validateWin();
+    uint8_t getBoxIndex(uint32_t x, uint32_t y);
+    struct Box {
+        uint32_t left;
+        uint32_t right;
+        uint32_t top;
+        uint32_t bottom;
+    };
+    struct o_object {
+        uint8_t index;
+        sf::CircleShape o;
+    };
     struct x_object {
+        uint8_t index;
         sf::RectangleShape x[2];
     };
     const uint32_t cell_height{200};
@@ -26,7 +39,8 @@ private:
     sf::RectangleShape m_firstHorizontalLine;
     sf::RectangleShape m_secondHorizontalLine;
 
-    std::vector<sf::CircleShape> m_o_list;
+    std::array<Box, 9> m_box;
+    std::vector<o_object> m_o_list;
     std::vector<x_object> m_x_list;
     bool m_now_x{true};
 };

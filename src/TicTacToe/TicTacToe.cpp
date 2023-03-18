@@ -19,6 +19,13 @@ TicTacToe::TicTacToe()
     m_secondHorizontalLine.setSize(sf::Vector2f(width(), space_width));
     m_secondHorizontalLine.setPosition(sf::Vector2f(0, cell_height + space_width + cell_height));
     m_secondHorizontalLine.setFillColor(sf::Color::White);
+
+    for(uint8_t index = 0; index < m_box.size(); index++) {
+        m_box[index].left = (index % 3) * cell_width + (index % 3) * space_width;
+        m_box[index].right = m_box[index].left + cell_width;
+        m_box[index].top = (index / 3) * cell_height + (index / 3) * space_width;
+        m_box[index].bottom = m_box[index].top + cell_height;
+    }
 }
 
 TicTacToe::~TicTacToe()
@@ -46,7 +53,7 @@ void TicTacToe::draw(sf::RenderWindow& window)
     window.draw(m_secondHorizontalLine);
 
     for(auto& circle : m_o_list) {
-        window.draw(circle);
+        window.draw(circle.o);
     }
 
     for(auto& x_ : m_x_list) {
@@ -63,81 +70,72 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
     uint32_t y = event.mouseButton.y;
     uint32_t offset = 20;
 
+    if(m_x_list.size() + m_o_list.size() >= 9) {
+        return;
+    }
+
     if(m_now_x) {
         x_object local_x_object;
-        local_x_object.x[0].setSize(sf::Vector2f(10, cell_height));
+        local_x_object.x[0].setSize(sf::Vector2f(10, cell_height + 20));
         local_x_object.x[0].setFillColor(sf::Color::Yellow);
         local_x_object.x[0].rotate(-45);
 
-        local_x_object.x[1].setSize(sf::Vector2f(10, cell_height));
+        local_x_object.x[1].setSize(sf::Vector2f(10, cell_height + 20));
         local_x_object.x[1].setFillColor(sf::Color::Yellow);
         local_x_object.x[1].rotate(45);
 
-
-        if(x <= cell_width && y <= cell_height ) {
-            // 0
-            local_x_object.x[0].setPosition(sf::Vector2f(offset, offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width - offset, offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y <= cell_height ) {
-            // 1
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + offset, offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width - offset, offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y <= cell_height ) {
-            // 2
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + cell_width - offset, offset));
-        } else if(x <= cell_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height) {
-            local_x_object.x[0].setPosition(sf::Vector2f(offset, cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width - offset, cell_height + space_width + offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height ) {
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + offset, cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width - offset, cell_height + space_width + offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height ) {
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + cell_width - offset, cell_height + space_width + offset));
-        } else if(x <= cell_width && y > cell_height + space_width + cell_height + space_width) {
-            local_x_object.x[0].setPosition(sf::Vector2f(offset, cell_height + space_width + cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width - offset, cell_height + space_width + cell_height + space_width + offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y > cell_height + space_width + cell_height + space_width ) {
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + offset, cell_height + space_width + cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width - offset, cell_height + space_width + cell_height + space_width + offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y > cell_height + space_width + cell_height + space_width ) {
-            local_x_object.x[0].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, cell_height + space_width + cell_height + space_width + offset));
-            local_x_object.x[1].setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + cell_width - offset, cell_height + space_width + cell_height + space_width + offset));
+        auto index = getBoxIndex(x, y);
+        if(index < 0) {
+            return;
         }
+        local_x_object.x[0].setPosition(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset));
+        local_x_object.x[1].setPosition(sf::Vector2f(m_box[index].right - offset, m_box[index].top + offset));
+        local_x_object.index = index;
 
         m_x_list.emplace_back(local_x_object);
     } else {
-        sf::CircleShape circle((cell_width / 2) - 40);
-        circle.setFillColor(sf::Color::Black);
-        circle.setOutlineThickness(10);
-        circle.setOutlineColor(sf::Color::Yellow);
+        o_object local_o_object;
+        local_o_object.o.setRadius((cell_width / 2) - 20);
+        local_o_object.o.setFillColor(sf::Color::Black);
+        local_o_object.o.setOutlineThickness(10);
+        local_o_object.o.setOutlineColor(sf::Color::Yellow);
 
-        if(x <= cell_width && y <= cell_height ) {
-            // 0
-            circle.setPosition(sf::Vector2f(offset, offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y <= cell_height ) {
-            // 1
-            circle.setPosition(sf::Vector2f(cell_width + space_width + offset, offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y <= cell_height ) {
-            // 2
-            circle.setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, offset));
-        } else if(x <= cell_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height) {
-            circle.setPosition(sf::Vector2f(offset, cell_height + space_width + offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height ) {
-            circle.setPosition(sf::Vector2f(cell_width + space_width + offset, cell_height + space_width + offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y > cell_height + space_width && y <= cell_height + space_width + cell_height ) {
-            circle.setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, cell_height + space_width + offset));
-        } else if(x <= cell_width && y > cell_height + space_width + cell_height + space_width) {
-            circle.setPosition(sf::Vector2f(offset, cell_height + space_width + cell_height + space_width + offset));
-        } else if(x > cell_width + space_width && x <= cell_width + space_width + cell_width && y > cell_height + space_width + cell_height + space_width ) {
-            circle.setPosition(sf::Vector2f(cell_width + space_width + offset, cell_height + space_width + cell_height + space_width + offset));
-        } else if(x > cell_width + space_width + cell_width + space_width && y > cell_height + space_width + cell_height + space_width ) {
-            circle.setPosition(sf::Vector2f(cell_width + space_width + cell_width + space_width + offset, cell_height + space_width + cell_height + space_width + offset));
+        auto index = getBoxIndex(x, y);
+        if(index < 0) {
+            return;
         }
+        local_o_object.o.setPosition(sf::Vector2f(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset)));
+        local_o_object.index = index;
 
-        m_o_list.emplace_back(circle);
+        m_o_list.emplace_back(local_o_object);
     }
 
     m_now_x = !m_now_x;
+}
+
+uint8_t TicTacToe::getBoxIndex(uint32_t x, uint32_t y)
+{
+    for(uint8_t index = 0; index < m_box.size(); index++) {
+        if(x > m_box[index].left &&
+            x <= m_box[index].right && 
+            y > m_box[index].top &&
+            y <= m_box[index].bottom)
+            {
+                return index;
+            }
+    }
+
+    std::cout << "returning default" << std::endl;
+    return -1;
+}
+
+void TicTacToe::validateWin()
+{
+    if(m_x_list.size() < 3 && m_o_list.size() < 3) {
+        return;
+    }
+
+    if(m_now_x) {
+        
+    }
 }
