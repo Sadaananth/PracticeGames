@@ -14,6 +14,9 @@ public:
     void mouseButtonPressed(const sf::Event& event);
 
 private:
+    struct x_object {
+        sf::RectangleShape x[2];
+    };
     const uint32_t cell_height{200};
     const uint32_t cell_width{200};
     const uint32_t space_width{20};
@@ -24,4 +27,6 @@ private:
     sf::RectangleShape m_secondHorizontalLine;
 
     std::vector<sf::CircleShape> m_o_list;
+    std::vector<x_object> m_x_list;
+    bool m_now_x{true};
 };
