@@ -33,3 +33,5 @@
 
 # bazel generated folders
 bazel-*
+
+.vscode

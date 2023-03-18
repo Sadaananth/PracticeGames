@@ -5,15 +5,23 @@
 int main()
 {
     TicTacToe ticTacToe;
-    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(ticTacToe.width(), ticTacToe.height()), "SFML works!");
 
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            switch(event.type) {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::MouseButtonPressed:
+                    ticTacToe.mouseButtonPressed(event);
+                    break;
+                default:
+                    break;
+            }
         }
 
         window.clear();
