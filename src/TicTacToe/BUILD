@@ -14,5 +14,8 @@ cc_binary(
     ],
     data = [
         "//src/TicTacToe/resources:GameAssets",
+    ],
+    deps = [
+        "@SadaLogger",
     ]
 )
