@@ -12,4 +12,7 @@ cc_binary(
         "-lsfml-window",
         "-lsfml-system",
     ],
+    data = [
+        "//src/TicTacToe/resources:GameAssets",
+    ]
 )

@@ -14,8 +14,12 @@ public:
     void mouseButtonPressed(const sf::Event& event);
 
 private:
+    uint32_t boardHeight() const;
+    uint32_t boardStart() const;
+
     void validateWin();
     uint8_t getBoxIndex(uint32_t x, uint32_t y);
+
     struct Box {
         uint32_t left;
         uint32_t right;
@@ -35,6 +39,9 @@ private:
     const uint32_t space_width{20};
     const uint32_t title_height{200};
 
+    sf::Font m_titleFont;
+    sf::Text m_titleText;
+    sf::RectangleShape m_titleEndVerticalLine;
     sf::RectangleShape m_firstVerticalLine;
     sf::RectangleShape m_secondVerticalLine;
     sf::RectangleShape m_firstHorizontalLine;
@@ -45,4 +52,5 @@ private:
     std::vector<x_object> m_x_list;
     sf::RectangleShape m_winner_line;
     bool m_now_x{true};
+    bool m_win{false};
 };
