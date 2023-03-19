@@ -5,7 +5,7 @@
 int main()
 {
     TicTacToe ticTacToe;
-    sf::RenderWindow window(sf::VideoMode(ticTacToe.width(), ticTacToe.height()), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(ticTacToe.width(), ticTacToe.height()), "TicTacToe");
 
     while (window.isOpen())
     {

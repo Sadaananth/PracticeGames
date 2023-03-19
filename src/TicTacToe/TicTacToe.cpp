@@ -34,6 +34,25 @@ TicTacToe::TicTacToe()
     m_secondHorizontalLine.setPosition(sf::Vector2f(0, boardStart() + cell_height + space_width + cell_height));
     m_secondHorizontalLine.setFillColor(sf::Color::White);
 
+    m_thirdHorizontalLine.setSize(sf::Vector2f(width(), space_width));
+    m_thirdHorizontalLine.setPosition(sf::Vector2f(0, boardStart() + boardHeight()));
+    m_thirdHorizontalLine.setFillColor(sf::Color::White);
+
+    m_restartButtonBox.left = width() / 2 - restartButtonWidth / 2;
+    m_restartButtonBox.right = m_restartButtonBox.left + restartButtonWidth;
+    m_restartButtonBox.top = boardStart() + boardHeight() + space_width + 20;
+    m_restartButtonBox.bottom = m_restartButtonBox.top + restartButtonHeight;
+
+    m_restartButton.setSize(sf::Vector2f(restartButtonWidth, restartButtonHeight));
+    m_restartButton.setPosition(m_restartButtonBox.left, m_restartButtonBox.top);
+    m_restartButton.setFillColor(sf::Color::Blue);
+
+    m_restartText.setString("Restart");
+    m_restartText.setFont(m_titleFont);
+    m_restartText.setCharacterSize(30);
+    m_restartText.setPosition(width() / 2 - 50, m_restartButtonBox.top);
+    m_restartText.setFillColor(sf::Color::White);
+
     for(uint8_t index = 0; index < m_box.size(); index++) {
         m_box[index].left = (index % 3) * cell_width + (index % 3) * space_width;
         m_box[index].right = m_box[index].left + cell_width;
@@ -55,7 +74,7 @@ uint32_t TicTacToe::width() const
 
 uint32_t TicTacToe::height() const
 {
-    static uint32_t local_height = boardHeight() + boardStart();
+    static uint32_t local_height = boardHeight() + boardStart() + footer_height;
     return local_height;
 }
 
@@ -79,6 +98,9 @@ void TicTacToe::draw(sf::RenderWindow& window)
     window.draw(m_secondVerticalLine);
     window.draw(m_firstHorizontalLine);
     window.draw(m_secondHorizontalLine);
+    window.draw(m_thirdHorizontalLine);
+    window.draw(m_restartButton);
+    window.draw(m_restartText);
 
     for(auto& circle : m_o_list) {
         window.draw(circle.o);
@@ -97,6 +119,11 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
     uint32_t x = event.mouseButton.x;
     uint32_t y = event.mouseButton.y;
     uint32_t offset = 20;
+
+    if(y > boardStart() + boardHeight()) {
+        handleFooterPressed(x, y);
+        return;
+    }
 
     if(m_x_list.size() + m_o_list.size() >= 9) {
         return;
@@ -122,10 +149,10 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
 
         m_x_list.emplace_back(local_x_object);
 
-        validateWin();
-
-        m_now_x = !m_now_x;
         m_titleText.setString("Player 2's turn");
+
+        validateWin();
+        m_now_x = !m_now_x;
     } else {
         o_object local_o_object;
         local_o_object.o.setRadius((cell_width / 2) - 20);
@@ -142,11 +169,10 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
 
         m_o_list.emplace_back(local_o_object);
 
-        validateWin();
-
-        m_now_x = !m_now_x;
-
         m_titleText.setString("Player 1's turn");
+
+        validateWin();
+        m_now_x = !m_now_x;
     }
 }
 
@@ -237,4 +263,18 @@ void TicTacToe::validateWin()
             m_titleText.setString("Congrats Player 2 win");
         }
     }
+}
+
+void TicTacToe::handleFooterPressed(uint32_t x, uint32_t y)
+{
+    if(x >= m_restartButtonBox.left 
+        && x <= m_restartButtonBox.right
+        && y >= m_restartButtonBox.top
+        && y <= m_restartButtonBox.bottom) {
+            m_titleText.setString("Player 1's turn");
+            m_now_x = true;
+            m_o_list.clear();
+            m_x_list.clear();
+            m_winner_line.setSize(sf::Vector2f(0,0));
+        }
 }

@@ -16,6 +16,6 @@ cc_binary(
         "//src/TicTacToe/resources:GameAssets",
     ],
     deps = [
-        "@SadaLogger",
+        # "//external:SadaLogger",
     ]
 )

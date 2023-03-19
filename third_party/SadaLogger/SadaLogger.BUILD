@@ -5,4 +5,5 @@ cc_library(
     linkopts = [
         "-lSadaLogger",
     ],
+    visibility = ["//visibility:public"],
 )

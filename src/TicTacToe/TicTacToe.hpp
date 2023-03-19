@@ -16,6 +16,7 @@ public:
 private:
     uint32_t boardHeight() const;
     uint32_t boardStart() const;
+    void handleFooterPressed(uint32_t x, uint32_t y);
 
     void validateWin();
     uint8_t getBoxIndex(uint32_t x, uint32_t y);
@@ -37,7 +38,10 @@ private:
     const uint32_t cell_height{200};
     const uint32_t cell_width{200};
     const uint32_t space_width{20};
-    const uint32_t title_height{200};
+    const uint32_t title_height{100};
+    const uint32_t footer_height{100};
+    const uint32_t restartButtonHeight{40};
+    const uint32_t restartButtonWidth{200};
 
     sf::Font m_titleFont;
     sf::Text m_titleText;
@@ -46,6 +50,10 @@ private:
     sf::RectangleShape m_secondVerticalLine;
     sf::RectangleShape m_firstHorizontalLine;
     sf::RectangleShape m_secondHorizontalLine;
+    sf::RectangleShape m_thirdHorizontalLine;
+    sf::RectangleShape m_restartButton;
+    sf::Text m_restartText;
+    Box m_restartButtonBox;
 
     std::array<Box, 9> m_box;
     std::vector<o_object> m_o_list;
