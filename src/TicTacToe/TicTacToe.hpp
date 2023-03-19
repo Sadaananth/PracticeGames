@@ -33,6 +33,7 @@ private:
     const uint32_t cell_height{200};
     const uint32_t cell_width{200};
     const uint32_t space_width{20};
+    const uint32_t title_height{200};
 
     sf::RectangleShape m_firstVerticalLine;
     sf::RectangleShape m_secondVerticalLine;
@@ -42,5 +43,6 @@ private:
     std::array<Box, 9> m_box;
     std::vector<o_object> m_o_list;
     std::vector<x_object> m_x_list;
+    sf::RectangleShape m_winner_line;
     bool m_now_x{true};
 };
