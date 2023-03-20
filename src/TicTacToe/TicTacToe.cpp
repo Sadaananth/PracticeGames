@@ -59,6 +59,12 @@ TicTacToe::TicTacToe()
         m_box[index].top = (index / 3) * cell_height + (index / 3) * space_width + boardStart();
         m_box[index].bottom = m_box[index].top + cell_height;
     }
+
+    m_indexHighlightRectangle.setSize(sf::Vector2f(cell_width, cell_height));
+    m_indexHighlightRectangle.setOutlineThickness(10);
+    m_indexHighlightRectangle.setOutlineColor(sf::Color::Magenta);
+    m_indexHighlightRectangle.setFillColor(sf::Color::Black);
+    updateHighLightRectangle();
 }
 
 TicTacToe::~TicTacToe()
@@ -101,6 +107,7 @@ void TicTacToe::draw(sf::RenderWindow& window)
     window.draw(m_thirdHorizontalLine);
     window.draw(m_restartButton);
     window.draw(m_restartText);
+    window.draw(m_indexHighlightRectangle);
 
     for(auto& circle : m_o_list) {
         window.draw(circle.o);
@@ -118,7 +125,6 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
 {
     uint32_t x = event.mouseButton.x;
     uint32_t y = event.mouseButton.y;
-    uint32_t offset = 20;
 
     if(y > boardStart() + boardHeight()) {
         handleFooterPressed(x, y);
@@ -130,49 +136,46 @@ void TicTacToe::mouseButtonPressed(const sf::Event& event)
     }
 
     if(m_now_x) {
-        x_object local_x_object;
-        local_x_object.x[0].setSize(sf::Vector2f(10, cell_height + 20));
-        local_x_object.x[0].setFillColor(sf::Color::Yellow);
-        local_x_object.x[0].rotate(-45);
-
-        local_x_object.x[1].setSize(sf::Vector2f(10, cell_height + 20));
-        local_x_object.x[1].setFillColor(sf::Color::Yellow);
-        local_x_object.x[1].rotate(45);
-
-        auto index = getBoxIndex(x, y);
-        if(index < 0) {
-            return;
+        if(updateX(x, y)) {
+            m_now_x = !m_now_x;
         }
-        local_x_object.x[0].setPosition(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset));
-        local_x_object.x[1].setPosition(sf::Vector2f(m_box[index].right - offset, m_box[index].top + offset));
-        local_x_object.index = index;
-
-        m_x_list.emplace_back(local_x_object);
-
-        m_titleText.setString("Player 2's turn");
-
-        validateWin();
-        m_now_x = !m_now_x;
     } else {
-        o_object local_o_object;
-        local_o_object.o.setRadius((cell_width / 2) - 20);
-        local_o_object.o.setFillColor(sf::Color::Black);
-        local_o_object.o.setOutlineThickness(10);
-        local_o_object.o.setOutlineColor(sf::Color::Yellow);
-
-        auto index = getBoxIndex(x, y);
-        if(index < 0) {
-            return;
+        if(updateO(x, y)) {
+            m_now_x = !m_now_x;
         }
-        local_o_object.o.setPosition(sf::Vector2f(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset)));
-        local_o_object.index = index;
+    }
+}
 
-        m_o_list.emplace_back(local_o_object);
-
-        m_titleText.setString("Player 1's turn");
-
-        validateWin();
-        m_now_x = !m_now_x;
+void TicTacToe::keyButtonPressed(const sf::Event& event)
+{
+    switch(event.key.code) {
+        case sf::Keyboard::Enter:
+            if(m_now_x) {
+                updateX(m_box[m_index_active].right - 20, m_box[m_index_active].bottom - 20);
+                m_now_x = !m_now_x;
+            } else {
+                updateO(m_box[m_index_active].right - 20, m_box[m_index_active].bottom - 20);
+                m_now_x = !m_now_x;
+            }
+            break;
+        case sf::Keyboard::Right:
+            m_index_active = (m_index_active + 1) % 9;
+            updateHighLightRectangle();
+            break;
+        case sf::Keyboard::Left:
+            m_index_active = (m_index_active - 1) % 9;
+            updateHighLightRectangle();
+            break;
+        case sf::Keyboard::Down:
+            m_index_active = (m_index_active + 3) % 9;
+            updateHighLightRectangle();
+            break;
+        case sf::Keyboard::Up:
+            m_index_active = (m_index_active - 3) % 9;
+            updateHighLightRectangle();
+            break;
+        default:
+            break;
     }
 }
 
@@ -189,6 +192,65 @@ uint8_t TicTacToe::getBoxIndex(uint32_t x, uint32_t y)
     }
 
     return -1;
+}
+
+bool TicTacToe::updateX(uint32_t x, uint32_t y)
+{
+    uint32_t offset = 20;
+    if(auto index = getBoxIndex(x, y); index >= 0) {
+        x_object local_x_object;
+        local_x_object.x[0].setSize(sf::Vector2f(10, cell_height + 20));
+        local_x_object.x[0].setFillColor(sf::Color::Yellow);
+        local_x_object.x[0].rotate(-45);
+
+        local_x_object.x[1].setSize(sf::Vector2f(10, cell_height + 20));
+        local_x_object.x[1].setFillColor(sf::Color::Yellow);
+        local_x_object.x[1].rotate(45);
+
+        local_x_object.x[0].setPosition(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset));
+        local_x_object.x[1].setPosition(sf::Vector2f(m_box[index].right - offset, m_box[index].top + offset));
+        local_x_object.index = index;
+
+        m_x_list.emplace_back(local_x_object);
+
+        m_titleText.setString("Player 2's turn");
+
+        validateWin();
+
+        return true;
+    }
+
+    return false;
+}
+
+bool TicTacToe::updateO(uint32_t x, uint32_t y)
+{
+    uint32_t offset = 20;
+    if(auto index = getBoxIndex(x, y); index >= 0) {
+        o_object local_o_object;
+        local_o_object.o.setRadius((cell_width / 2) - 20);
+        local_o_object.o.setFillColor(sf::Color::Black);
+        local_o_object.o.setOutlineThickness(10);
+        local_o_object.o.setOutlineColor(sf::Color::Yellow);
+
+        local_o_object.o.setPosition(sf::Vector2f(sf::Vector2f(m_box[index].left + offset, m_box[index].top + offset)));
+        local_o_object.index = index;
+
+        m_o_list.emplace_back(local_o_object);
+
+        m_titleText.setString("Player 1's turn");
+
+        validateWin();
+
+        return true;
+    }
+
+    return false;
+}
+
+void TicTacToe::updateHighLightRectangle()
+{
+    m_indexHighlightRectangle.setPosition(sf::Vector2f(m_box[m_index_active].left, m_box[m_index_active].top));
 }
 
 void TicTacToe::validateWin()
@@ -221,12 +283,12 @@ void TicTacToe::validateWin()
             m_winner_line.setFillColor(sf::Color::Green);
             m_winner_line.setRotation(90);            
         } else if(visited[1] && visited[4] && visited[7]) {
-            m_winner_line.setSize(sf::Vector2f(4 * cell_height, 20));
+            m_winner_line.setSize(sf::Vector2f(3 * cell_height, 20));
             m_winner_line.setPosition(m_box[1].left + cell_width / 2, m_box[1].top + 10);
             m_winner_line.setFillColor(sf::Color::Green);
             m_winner_line.setRotation(90);            
         } else if(visited[2] && visited[5] && visited[8]) {
-            m_winner_line.setSize(sf::Vector2f(4 * cell_height, 20));
+            m_winner_line.setSize(sf::Vector2f(3 * cell_height, 20));
             m_winner_line.setPosition(m_box[2].left + cell_width / 2, m_box[2].top + 10);
             m_winner_line.setFillColor(sf::Color::Green);
             m_winner_line.setRotation(90);            
@@ -276,5 +338,7 @@ void TicTacToe::handleFooterPressed(uint32_t x, uint32_t y)
             m_o_list.clear();
             m_x_list.clear();
             m_winner_line.setSize(sf::Vector2f(0,0));
+            m_index_active = 0;
+            updateHighLightRectangle();
         }
 }

@@ -19,6 +19,9 @@ int main()
                 case sf::Event::MouseButtonPressed:
                     ticTacToe.mouseButtonPressed(event);
                     break;
+                case sf::Event::KeyPressed:
+                    ticTacToe.keyButtonPressed(event);
+                    break;
                 default:
                     break;
             }

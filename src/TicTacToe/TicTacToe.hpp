@@ -12,14 +12,20 @@ public:
     uint32_t height() const;
     void draw(sf::RenderWindow& window);
     void mouseButtonPressed(const sf::Event& event);
+    void keyButtonPressed(const sf::Event& event);
 
 private:
     uint32_t boardHeight() const;
     uint32_t boardStart() const;
     void handleFooterPressed(uint32_t x, uint32_t y);
 
+    void updateHighLightRectangle();
+
     void validateWin();
     uint8_t getBoxIndex(uint32_t x, uint32_t y);
+
+    bool updateX(uint32_t x, uint32_t y);
+    bool updateO(uint32_t x, uint32_t y);
 
     struct Box {
         uint32_t left;
@@ -61,4 +67,7 @@ private:
     sf::RectangleShape m_winner_line;
     bool m_now_x{true};
     bool m_win{false};
+
+    sf::RectangleShape m_indexHighlightRectangle;
+    uint8_t m_index_active{0};
 };
