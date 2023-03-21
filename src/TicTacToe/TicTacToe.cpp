@@ -1,4 +1,5 @@
 #include "TicTacToe.hpp"
+#include "src/Logger.hpp"
 
 #include <array>
 #include <iostream>
