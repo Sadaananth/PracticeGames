@@ -1,5 +1,5 @@
 filegroup(
-    name = "GameAssets",
+    name = "CommonAssets",
     srcs = [
         "AntiCorona.ttf",
     ],

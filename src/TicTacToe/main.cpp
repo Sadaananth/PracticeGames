@@ -1,11 +1,16 @@
 #include "TicTacToe.hpp"
+#include "src/Logger.hpp"
 
 #include <SFML/Graphics.hpp>
+
+using namespace Sada;
 
 int main()
 {
     TicTacToe ticTacToe;
     sf::RenderWindow window(sf::VideoMode(ticTacToe.width(), ticTacToe.height()), "TicTacToe");
+
+    Logger::instance().add_sink(Logger::Sink::console, LogLevel::Info);
 
     while (window.isOpen())
     {

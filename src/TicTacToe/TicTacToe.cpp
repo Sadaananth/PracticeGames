@@ -4,10 +4,12 @@
 #include <array>
 #include <iostream>
 
+using namespace Sada;
+
 TicTacToe::TicTacToe()
 {
     m_titleText.setString("Player 1's turn");
-    if(!m_titleFont.loadFromFile("src/TicTacToe/resources/AntiCorona.ttf")) {
+    if(!m_titleFont.loadFromFile("resources/AntiCorona.ttf")) {
         throw std::runtime_error("Failed to load font");
     }
     m_titleText.setFont(m_titleFont);
@@ -164,7 +166,7 @@ void TicTacToe::keyButtonPressed(const sf::Event& event)
             updateHighLightRectangle();
             break;
         case sf::Keyboard::Left:
-            m_index_active = (m_index_active - 1) % 9;
+            m_index_active = (9 + m_index_active - 1) % 9;
             updateHighLightRectangle();
             break;
         case sf::Keyboard::Down:
@@ -172,7 +174,7 @@ void TicTacToe::keyButtonPressed(const sf::Event& event)
             updateHighLightRectangle();
             break;
         case sf::Keyboard::Up:
-            m_index_active = (m_index_active - 3) % 9;
+            m_index_active = (9 + m_index_active - 3) % 9;
             updateHighLightRectangle();
             break;
         default:
@@ -251,6 +253,7 @@ bool TicTacToe::updateO(uint32_t x, uint32_t y)
 
 void TicTacToe::updateHighLightRectangle()
 {
+    LOG_DEBUG << "m_index_active: " << static_cast<int>(m_index_active);
     m_indexHighlightRectangle.setPosition(sf::Vector2f(m_box[m_index_active].left, m_box[m_index_active].top));
 }
 

@@ -4,8 +4,6 @@ cc_binary(
     name = "Game",
     srcs = [
         "main.cpp",
-        "TicTacToe.cpp",
-        "TicTacToe.hpp",
     ],
     linkopts = [
         "-lsfml-graphics",
