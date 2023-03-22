@@ -19,6 +19,7 @@ public:
 private:
 
     void moveBall();
+    void checkAndHandleCollision(sf::Vector2f& position);
 
     void movePaddleUp();
     void movePaddleDown();
@@ -27,7 +28,8 @@ private:
     sf::RectangleShape mLeftPaddle;
 
     sf::CircleShape mBall;
-    int mBallDirection{45};
+    int mBallXDirection{1};
+    int mBallYDirection{1};
 
     std::thread mBallThread;
 };

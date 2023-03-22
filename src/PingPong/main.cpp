@@ -9,7 +9,7 @@ int main()
 {
     PingPong pingPong;
     sf::RenderWindow window(sf::VideoMode(PingPong::Width, PingPong::Height), "Ping Pong");
-    Logger::instance().add_sink(Logger::Sink::console, LogLevel::Debug);
+    Logger::instance().add_sink(Logger::Sink::console, LogLevel::Info);
 
     while(window.isOpen()) {
         sf::Event event;
@@ -36,7 +36,7 @@ int main()
         window.clear();
         pingPong.draw(window);
         window.display();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
     return 0;
 }

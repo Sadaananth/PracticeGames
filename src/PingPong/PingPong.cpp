@@ -2,8 +2,6 @@
 
 #include "PingPong.hpp"
 
-#include <cmath>
-
 using namespace Sada;
 
 PingPong::PingPong()
@@ -72,12 +70,33 @@ void PingPong::moveBall()
 
     LOG_DEBUG << "Previous ball position x=" << position.x << " y=" << position.y;
     sf::Vector2f value;
-    value.x = position.x + 2 * cos(mBallDirection);
-    value.y = position.y + 2 * sin(mBallDirection);
+    value.x = position.x + 2 * mBallXDirection;
+    value.y = position.y + 2 * mBallYDirection;
     LOG_DEBUG << "Current ball position x=" << value.x << " y=" << value.y;
 
     if(value.y >= Height || value.y <= 0) {
-        mBallDirection = -mBallDirection;
+        mBallYDirection = -mBallYDirection;
+    }
+
+    if(value.x >= Width || value.x <= 0) {
+        value.x = Width / 2;
+        value.y = Height / 2;
+    } else {
+        checkAndHandleCollision(value);
     }
     mBall.setPosition(value);
+}
+
+void PingPong::checkAndHandleCollision(sf::Vector2f& position)
+{
+    auto rightPosition = mRightPaddle.getPosition();
+    auto leftPosition = mLeftPaddle.getPosition();
+    if(position.x >= rightPosition.x || position.x <= 10) {
+        auto diff = rightPosition.y - position.y;
+        const auto size = mRightPaddle.getSize();
+        // if(diff < size.y / 2) {
+        //     mBallXDirection
+        // }
+        mBallXDirection = -mBallXDirection;
+    }
 }
