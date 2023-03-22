@@ -2,19 +2,32 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <thread>
+
 class PingPong
 {
 public:
-    PingPong() {}
+    PingPong();
     ~PingPong() {}
 
     static const uint32_t Width = 640;
-    static const uint32_t Height = 480;
+    static const uint32_t Height = 640;
 
     void keyboardEventHandler(const sf::Event& event);
     void mouseEventHandler(const sf::Event& event);
     void draw(sf::RenderWindow& window);
 private:
 
+    void moveBall();
 
+    void movePaddleUp();
+    void movePaddleDown();
+
+    sf::RectangleShape mRightPaddle;
+    sf::RectangleShape mLeftPaddle;
+
+    sf::CircleShape mBall;
+    int mBallDirection{45};
+
+    std::thread mBallThread;
 };
