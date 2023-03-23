@@ -19,17 +19,22 @@ public:
 private:
 
     void moveBall();
-    void checkAndHandleCollision(sf::Vector2f& position);
+    void checkAndHandleCollision(sf::Vector2f& ballPosition);
 
     void movePaddleUp();
     void movePaddleDown();
 
-    sf::RectangleShape mRightPaddle;
-    sf::RectangleShape mLeftPaddle;
+    inline static const uint32_t BallRadius = 15;
+    sf::RectangleShape mPaddle;
+    sf::Text mText;
+    sf::Font mTextFont;
 
     sf::CircleShape mBall;
-    int mBallXDirection{1};
-    int mBallYDirection{1};
+    float mBallXDirection{-1};
+    float mBallYDirection{-0.2};
 
-    std::thread mBallThread;
+    float mBallVelocity{1};
+    bool mMoveBall{false};
+
+    uint64_t mPaddleContact{0};
 };
