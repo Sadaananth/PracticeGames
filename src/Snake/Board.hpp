@@ -12,6 +12,8 @@ public:
 
     void mouseButtonPressed(const sf::Event& event);
 
+    void checkAndHandleBallEaten();
+
     uint32_t width() const;
     uint32_t height() const;
 private:

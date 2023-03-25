@@ -1,23 +1,20 @@
 #include "Board.hpp"
 
- #include <experimental/random>
-
 constexpr uint32_t BOARD_WIDTH = 600;
 constexpr uint32_t BOARD_HEIGHT = 600;
 constexpr uint32_t CELL_WIDTH = 30;
 constexpr uint32_t CELL_COUNT = (BOARD_WIDTH * BOARD_HEIGHT) / (CELL_WIDTH * CELL_WIDTH);
+constexpr uint32_t BALL_RADIUS = 8;
+constexpr uint32_t BALL_CELL_OFFSET = CELL_WIDTH - (2 * BALL_RADIUS);
 
-Board::Board() : mSnake(Snake::instance())
+Board::Board() : mSnake(Snake::instance(CELL_WIDTH))
 {
-    mSnake.setSize(CELL_WIDTH);
-
-    //auto random = std::experimental::randint(0, CELL_COUNT);
-    mBall.setRadius(CELL_WIDTH / 2);
+    mBall.setRadius(BALL_RADIUS);
     mBall.setFillColor(sf::Color::White);
 
     sf::Vector2f position;
-    position.x = 0;
-    position.y = 0;
+    position.x = BALL_CELL_OFFSET / 2;
+    position.y = BALL_CELL_OFFSET / 2;
     mBall.setPosition(position);
 }
 
@@ -26,7 +23,6 @@ void Board::draw(sf::RenderWindow& window)
     window.draw(mBall);
     mSnake.draw(window);
 }
-
 
 void Board::mouseButtonPressed(const sf::Event& event)
 {
@@ -42,6 +38,12 @@ void Board::mouseButtonPressed(const sf::Event& event)
         default:
             break;
     }
+}
+
+void Board::checkAndHandleBallEaten()
+{
+    // ball eaten
+    mSnake.growSnake();
 }
 
 uint32_t Board::width() const

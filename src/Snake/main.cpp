@@ -27,6 +27,7 @@ int main()
                     break;
                 case sf::Event::MouseButtonPressed:
                     LOG_DEBUG << "sf::Event::MouseButtonPressed received";
+                    // LOG_DEBUG << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y;
                     break;
                 case sf::Event::KeyPressed:
                     LOG_DEBUG << "sf::Event::KeyPressed received";

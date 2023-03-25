@@ -8,6 +8,8 @@ cc_binary(
         "Board.hpp",
         "Snake.cpp",
         "Snake.hpp",
+        "SnakeBlock.cpp",
+        "SnakeBlock.hpp",
     ],
     linkopts = [
         "-lsfml-graphics",
