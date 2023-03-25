@@ -4,6 +4,10 @@ cc_binary(
     name = "Game",
     srcs = [
         "main.cpp",
+        "Board.cpp",
+        "Board.hpp",
+        "Snake.cpp",
+        "Snake.hpp",
     ],
     linkopts = [
         "-lsfml-graphics",

@@ -1,3 +1,5 @@
+#include "Board.hpp"
+
 #include "src/Logger.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -6,13 +8,18 @@ using namespace Sada;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(400, 400), "Snake");
-    Logger::instance().add_sink(Logger::Sink::console, LogLevel::Info);
+    Board board;
+    sf::RenderWindow window(sf::VideoMode(board.width(), board.height()), "Snake");
+    Logger::instance().add_sink(Logger::Sink::console, LogLevel::Debug);
 
     while(window.isOpen()) {
-        sf::Event event;
 
-        while(window.pollEvent(event)) {
+        window.clear();
+        board.draw(window);
+        window.display();
+        
+        sf::Event event;
+        while(window.isOpen() && window.pollEvent(event)) {
             switch(event.type) {
                 case sf::Event::Closed:
                     LOG_DEBUG << "sf::Event::Closed received";
@@ -23,14 +30,12 @@ int main()
                     break;
                 case sf::Event::KeyPressed:
                     LOG_DEBUG << "sf::Event::KeyPressed received";
+                    board.mouseButtonPressed(event);
                     break;
                 default:
                     break;
             }
         }
-        
-        window.clear();
-        window.display();
     }
     return 0;
 }

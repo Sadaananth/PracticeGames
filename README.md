@@ -3,6 +3,8 @@ Repo to practice game development
 
 # Games
 
-[TicTacToe game](src/TicTacToe/README.md)
+[TicTacToe](src/TicTacToe/README.md)
 
-[PingPong game](src/PingPong/README.md)
+[PingPong](src/PingPong/README.md)
+
+[Snake](src/Snake/README.md)
