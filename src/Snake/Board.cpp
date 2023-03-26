@@ -1,5 +1,9 @@
 #include "Board.hpp"
 
+#include "src/Logger.hpp"
+
+using namespace Sada;
+
 constexpr uint32_t BOARD_WIDTH = 600;
 constexpr uint32_t BOARD_HEIGHT = 600;
 constexpr uint32_t CELL_WIDTH = 30;
@@ -28,22 +32,41 @@ void Board::mouseButtonPressed(const sf::Event& event)
 {
     switch(event.key.code) {
         case sf::Keyboard::Up:
+            mSnake.faceUp();
             break;
         case sf::Keyboard::Down:
+            mSnake.faceDown();
             break;
         case sf::Keyboard::Left:
+            mSnake.faceLeft();
             break;
         case sf::Keyboard::Right:
+            mSnake.faceRight();
             break;
         default:
             break;
+    }
+
+    checkAndHandleSnakeCollided();
+    checkAndHandleBallEaten();
+}
+
+void Board::checkAndHandleSnakeCollided()
+{
+    if(mSnake.isSnakeCollided()) {
+        LOG_DEBUG << "Snake collided";
     }
 }
 
 void Board::checkAndHandleBallEaten()
 {
-    // ball eaten
-    mSnake.growSnake();
+    auto snakeHeadPosition = mSnake.getHeadPosition();
+    auto ballPosition = mBall.getPosition();
+    if((ballPosition.x >= snakeHeadPosition.x && ballPosition.x <= (snakeHeadPosition.x + CELL_WIDTH))
+        || (ballPosition.y >= snakeHeadPosition.y && ballPosition.y <= (snakeHeadPosition.y + CELL_WIDTH))) {
+            mSnake.growSnake();
+            LOG_DEBUG << "Ate ball";
+        }
 }
 
 uint32_t Board::width() const

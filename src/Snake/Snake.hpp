@@ -18,14 +18,15 @@ public:
     void faceLeft();
     void faceRight();
 
+    bool isSnakeCollided() const;
+    sf::Vector2f getHeadPosition() const;
+
 private:
     Snake(uint32_t size);
-    void advance();
+    void advance(int xdirection, int ydirection);
     void createAndAddBlock();
 
     std::vector<SnakeBlock> mSnakeBlocks;
 
     uint32_t mBlockSize;
-    uint32_t mXDirection{1};
-    uint32_t mYDirection{1};
 };

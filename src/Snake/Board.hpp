@@ -12,6 +12,7 @@ public:
 
     void mouseButtonPressed(const sf::Event& event);
 
+    void checkAndHandleSnakeCollided();
     void checkAndHandleBallEaten();
 
     uint32_t width() const;

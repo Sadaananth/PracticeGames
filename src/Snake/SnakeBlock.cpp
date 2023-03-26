@@ -4,6 +4,7 @@ SnakeBlock::SnakeBlock(uint32_t size)
 {
     mShape.setSize(sf::Vector2f(size, size));
     mShape.setFillColor(sf::Color::Green);
+    mShape.setPosition(sf::Vector2f(size, size));
 }
 
 SnakeBlock::~SnakeBlock()
