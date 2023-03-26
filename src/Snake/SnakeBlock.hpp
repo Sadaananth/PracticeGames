@@ -9,6 +9,7 @@ public:
     ~SnakeBlock();
 
     void setPosition(sf::Vector2f& position);
+    void setColor(sf::Color color);
 
     sf::Vector2f getPosition() const;
 
@@ -17,5 +18,5 @@ public:
 private:
     uint32_t mBlockSize;
 
-    sf::RectangleShape mShape;
+    sf::CircleShape mShape;
 };

@@ -11,12 +11,14 @@ public:
     void draw(sf::RenderWindow& window);
 
     void mouseButtonPressed(const sf::Event& event);
+    void moveBall();
 
     void checkAndHandleSnakeCollided();
     void checkAndHandleBallEaten();
 
     uint32_t width() const;
     uint32_t height() const;
+
 private:
     Snake& mSnake;
 

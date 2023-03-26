@@ -2,16 +2,21 @@
 
 #include "src/Logger.hpp"
 
+#include <cstdlib>
+#include <ctime>
+
 using namespace Sada;
 
 constexpr uint32_t BOARD_WIDTH = 600;
 constexpr uint32_t BOARD_HEIGHT = 600;
 constexpr uint32_t CELL_WIDTH = 30;
 constexpr uint32_t CELL_COUNT = (BOARD_WIDTH * BOARD_HEIGHT) / (CELL_WIDTH * CELL_WIDTH);
+constexpr uint32_t COL_COUNT = BOARD_WIDTH / CELL_WIDTH;
+constexpr uint32_t ROW_COUNT = BOARD_HEIGHT / CELL_WIDTH;
 constexpr uint32_t BALL_RADIUS = 8;
 constexpr uint32_t BALL_CELL_OFFSET = CELL_WIDTH - (2 * BALL_RADIUS);
 
-Board::Board() : mSnake(Snake::instance(CELL_WIDTH))
+Board::Board() : mSnake(Snake::instance(CELL_WIDTH, sf::Vector2f(BOARD_WIDTH, BOARD_HEIGHT)))
 {
     mBall.setRadius(BALL_RADIUS);
     mBall.setFillColor(sf::Color::White);
@@ -23,9 +28,12 @@ Board::Board() : mSnake(Snake::instance(CELL_WIDTH))
 }
 
 void Board::draw(sf::RenderWindow& window)
-{
+{    
     window.draw(mBall);
     mSnake.draw(window);
+
+    checkAndHandleSnakeCollided();
+    checkAndHandleBallEaten();
 }
 
 void Board::mouseButtonPressed(const sf::Event& event)
@@ -46,9 +54,17 @@ void Board::mouseButtonPressed(const sf::Event& event)
         default:
             break;
     }
+}
 
-    checkAndHandleSnakeCollided();
-    checkAndHandleBallEaten();
+void Board::moveBall()
+{
+    std::srand(std::time(nullptr));
+    int random_variable = std::rand() % CELL_COUNT;
+
+    sf::Vector2f position;
+    position.x = (random_variable % COL_COUNT) * CELL_WIDTH;
+    position.y = (random_variable / COL_COUNT) * CELL_WIDTH;
+    mBall.setPosition(position);
 }
 
 void Board::checkAndHandleSnakeCollided()
@@ -62,10 +78,13 @@ void Board::checkAndHandleBallEaten()
 {
     auto snakeHeadPosition = mSnake.getHeadPosition();
     auto ballPosition = mBall.getPosition();
+    // LOG_DEBUG << "Ball position x:" << ballPosition.x << " y:" << ballPosition.y;
+    // LOG_DEBUG << "SnakeHead position x:" << snakeHeadPosition.x << " y:" << snakeHeadPosition.y;
     if((ballPosition.x >= snakeHeadPosition.x && ballPosition.x <= (snakeHeadPosition.x + CELL_WIDTH))
-        || (ballPosition.y >= snakeHeadPosition.y && ballPosition.y <= (snakeHeadPosition.y + CELL_WIDTH))) {
+        && (ballPosition.y >= snakeHeadPosition.y && ballPosition.y <= (snakeHeadPosition.y + CELL_WIDTH))) {
             mSnake.growSnake();
             LOG_DEBUG << "Ate ball";
+            moveBall();
         }
 }
 

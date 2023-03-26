@@ -4,6 +4,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <thread>
+#include <chrono>
+
 using namespace Sada;
 
 int main()
@@ -37,6 +40,8 @@ int main()
                     break;
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     return 0;
 }
